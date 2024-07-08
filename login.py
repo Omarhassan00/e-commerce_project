@@ -16,11 +16,12 @@ db = mysql.connector.connect(
 )
 cr = db.cursor()
 
+
 # Home Page
 # http://127.0.0.1:5000/
-@app.route('/')
-def index():
-    return "Hello from home page!"
+@app.route('/<username>')
+def index(username):
+    return f'Welcome {username} in your Home Page'
 
 
 # Log-in Page
@@ -34,14 +35,14 @@ def login():
     data = cr.fetchone()
 
     if data != None:
-        return redirect('/')
+        return redirect(f'/{username}')
 
     else:
         return (f'sorry, {username} you don\'t have access\n')
 
 
 # Registration Page
-#  http://127.0.0.1:5000/registration?username=omar&password=123&email=omarhassan&first_name=oar&last_name=hassan&country=egypt&city=suez&adress_line1=sgdf&adress_line2=sgdffdd&gender=male&date_birth=18-5-1997&phone=01090220650
+#  http://127.0.0.1:5000/registration?username=omar&password=123&email=omarhassan&first_name=oar&last_name=hassan&country=egypt&city=suez&adress_line1=sgdf&adress_line2=sgdffdd&gender=male&date_birth=1997-05-18&phone=01090220650
 @app.route('/registration')
 def registration():
 
