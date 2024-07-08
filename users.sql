@@ -49,8 +49,8 @@ CREATE TABLE IF NOT EXISTS `users` (
 -- Dumping data for table `users`
 --
 
-INSERT INTO IF NOT EXISTS `users` (`id`, `username`, `password`, `email`, `first_name`, `last_name`, `country`, `city`, `adress_line1`, `adress_line2`, `gender`, `date_birth`, `phone`, `membership`, `created_at`) VALUES
-(1, 'omar', '1234', 'omar123@gmail.com', 'omar', 'hassan', 'egypt', 'suez', 'dsjs;kljdl', 'sdsdsddsds', 'male', '2024-07-02', 1234567890, 'user', '2024-07-08 15:49:05');
+-- INSERT INTO `users` (`id`, `username`, `password`, `email`, `first_name`, `last_name`, `country`, `city`, `adress_line1`, `adress_line2`, `gender`, `date_birth`, `phone`, `membership`, `created_at`) VALUES
+-- (1, 'omar', '1234', 'omar123@gmail.com', 'omar', 'hassan', 'egypt', 'suez', 'dsjs;kljdl', 'sdsdsddsds', 'male', '2024-07-02', 1234567890, 'user', '2024-07-08 15:49:05');
 
 --
 -- Indexes for dumped tables
