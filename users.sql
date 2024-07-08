@@ -27,7 +27,7 @@ SET time_zone = "+00:00";
 -- Table structure for table `users`
 --
 
-CREATE TABLE `users` (
+CREATE TABLE IF NOT EXISTS `users` (
   `id` int(11) NOT NULL,
   `username` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   `password` varchar(200) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
@@ -49,7 +49,7 @@ CREATE TABLE `users` (
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `username`, `password`, `email`, `first_name`, `last_name`, `country`, `city`, `adress_line1`, `adress_line2`, `gender`, `date_birth`, `phone`, `membership`, `created_at`) VALUES
+INSERT INTO IF NOT EXISTS `users` (`id`, `username`, `password`, `email`, `first_name`, `last_name`, `country`, `city`, `adress_line1`, `adress_line2`, `gender`, `date_birth`, `phone`, `membership`, `created_at`) VALUES
 (1, 'omar', '1234', 'omar123@gmail.com', 'omar', 'hassan', 'egypt', 'suez', 'dsjs;kljdl', 'sdsdsddsds', 'male', '2024-07-02', 1234567890, 'user', '2024-07-08 15:49:05');
 
 --
