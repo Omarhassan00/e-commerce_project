@@ -47,7 +47,7 @@ body {
 }
 
 .container button {
-    background-color: #2b2258;
+    background-color: #B57EDC;
     color: #fff;
     font-size: 12px;
     border: 1px solid transparent;
@@ -177,7 +177,7 @@ body {
 }
 
 .toggle {
-    background-color: #2b2258;
+    background-color: #B57EDC;
     height: 100%;
     color: #fff;
     position: relative;
@@ -219,6 +219,7 @@ body {
     right: 0;
     transform: translateX(0);
 }
+
 .container.active .toggle-right {
     transform: translateX(100%);
 }

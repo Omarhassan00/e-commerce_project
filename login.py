@@ -2,11 +2,15 @@
 import mysql.connector
 
 # pip install flask
-from flask import Flask, request, redirect
+from flask import Flask, request, redirect, jsonify
 
+from flask_login import login_manager, current_user
+from flask_bcrypt import Bcrypt
+import os
 # Flask Start
 app = Flask(__name__)
-
+app.config['SECRET_KEY'] = os.urandom(32)
+bcrypt = Bcrypt(app)
 # Link DataBase
 db = mysql.connector.connect(
     host='localhost',
@@ -31,12 +35,14 @@ def login():
     username = request.args.get('username')
     password = request.args.get('password')
     cr.execute(
-        f'select * from `users` where username = "{username}" and password = "{password}"')
+        f'select * from `users` where username = "{username}"')
     data = cr.fetchone()
-
     if data != None:
-        return redirect(f'/{username}')
-
+        password_hashed = data[2]
+        if bcrypt.check_password_hash(password_hashed, password):
+            return jsonify(data)
+        else:
+            return 'Wrong Password'
     else:
         return (f'sorry, {username} you don\'t have access\n')
 
@@ -58,10 +64,17 @@ def registration():
     gender = request.args.get('gender')
     date_birth = request.args.get('date_birth')
     phone = request.args.get('phone')
-
-    cr.execute(f'INSERT INTO `users` (username,password,email,first_name,last_name,country,city,adress_line1,adress_line2,gender,date_birth,phone) VALUES ("{username}","{password}","{email}","{first_name}","{last_name}","{country}","{city}","{adress_line1}","{adress_line2}","{gender}","{date_birth}",{phone})')
+    hached_pass = bcrypt.generate_password_hash(password).decode("utf-8")
+    cr.execute(f'select * from `users` where email = "{email}"')
+    data = cr.fetchone()
+    if data != None:
+        return (f'sorry, {first_name} you already have an account\n')
+    else:
+        cr.execute(f'INSERT INTO `users` (username,password,email,first_name,last_name,country,city,adress_line1,adress_line2,gender,date_birth,phone) VALUES ("{
+                   username}","{hached_pass}","{email}","{first_name}","{last_name}","{country}","{city}","{adress_line1}","{adress_line2}","{gender}","{date_birth}",{phone})')
     db.commit()
     return f'user {username} added'
+
 
 # Run server code (development mode)
 if __name__ == '__main__':
