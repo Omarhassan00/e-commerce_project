@@ -1,4 +1,4 @@
-# pip install flask flask_bcrypt mysql.connector os
+# pip install flask flask_bcrypt mysql.connector os flask_login
 from flask import Flask, request, redirect, jsonify
 from flask_bcrypt import Bcrypt
 import os
@@ -7,7 +7,8 @@ from flask_login import LoginManager, UserMixin, login_user, login_required, log
 
 # Flask Start
 app = Flask(__name__)
-app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'pjadfomdkvfipojsrdgjsdfpjdsf54231')
+app.config['SECRET_KEY'] = os.environ.get(
+    'SECRET_KEY', 'z::xvs9N`[j):ld.bRx83N)[potFg&yANj.((Nb>bL<CC<SH)/_}2Fi+gV":28i')
 
 bcrypt = Bcrypt(app)
 login_manager = LoginManager()
@@ -26,10 +27,17 @@ cr = db.cursor()
 
 
 class User(UserMixin):
-    def __init__(self, id, email, password):
+    def __init__(self, id, email, password, role):
         self.id = id
         self.email = email
         self.password = password
+        self.role = role
+
+    def is_admin(self):
+        return self.role == 'admin'
+
+    def is_user(self):
+        return self.role == 'user'
 
     def check_password(self, password):
         return bcrypt.check_password_hash(self.password, password)
@@ -43,13 +51,13 @@ def load_user(user_id):
     cr.execute('select * from `users` where id = %s', (user_id,))
     data = cr.fetchone()
     if data:
-        return User(data[0], data[3], data[2])
+        # data[13] is the role column
+        return User(data[0], data[3], data[2], data[13])
     return None
+
 
 # Home Page
 # http://127.0.0.1:5000/
-
-
 @app.route('/')
 @login_required
 def index():
@@ -63,22 +71,37 @@ def login():
     email = request.args.get('email')
     password = request.args.get('password')
     if not email or not password:
-        return 'Invalid input', 400
-
+        return 'you must login', 400
     try:
         cr.execute('select * from `users` where email = %s', (email,))
         data = cr.fetchone()
         if data:
-            user = User(data[0], data[3], data[2])
+            user = User(data[0], data[3], data[2], data[13])
             if user.check_password(password):
                 login_user(user)
-                return redirect('/')
+                if data[13] == 'user':
+                    return redirect('/')
+                elif data[13] == 'admin':
+                    return redirect('/admin')
+                else:
+                    return 'error in user select'
             else:
                 return 'Wrong Password', 401
         else:
             return 'Wrong username', 401
     except mysql.connector.Error as e:
         return 'Database error', 500
+
+
+# Admin Page
+# http://127.0.0.1:5000/admin
+@app.route('/admin')
+@login_required
+def admin():
+    if current_user.is_admin():  # Check if the user is an admin
+        return 'hello from admin page'
+    else:
+        return 'Access denied', 403
 
 
 # Registration Page
@@ -108,14 +131,17 @@ def registration():
         else:
             hached_pass = bcrypt.generate_password_hash(
                 password).decode("utf-8")
-            cr.execute('INSERT INTO `users` (username,password,email,first_name,last_name,country,city,adress_line1,adress_line2,gender,date_birth,phone) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)',
+            cr.execute('INSERT INTO `users` (password,email,first_name,last_name,country,city,adress_line1,adress_line2,gender,date_birth,phone) VALUES ( %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)',
                        (hached_pass, email, first_name, last_name, country, city, adress_line1, adress_line2, gender, date_birth, phone))
             db.commit()
             return f'user {first_name} added', 201
     except mysql.connector.Error as e:
         return 'Database error', 500
 
-# logout Page
+# Logout Page
+# http://127.0.0.1:5000/logout
+
+
 @app.route('/logout')
 @login_required
 def logout():
