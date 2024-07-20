@@ -70,7 +70,7 @@ def load_user(user_id):
 # http://127.0.0.1:5000/
 @app.route('/')
 def index():
-    cr.execute('SELECT * FROM `PRODUCTS WHERE "id" BETWEEN 1 AND 12')
+    cr.execute('SELECT * FROM product LIMIT 10;')
     data = cr.fetchall()
     return jsonify(data)
 
@@ -233,7 +233,7 @@ def userinfo():
     if request.method == 'GET':
         cr.execute('SELECT * FROM `users` WHERE id = %s', (current_user.id,))
         data = cr.fetchone()
-        return jsonify(data)
+        return jsonify(data[2:])
 
     elif request.method == 'PUT':
         password = request.args.get('password')
@@ -315,6 +315,45 @@ def history():
         return jsonify(data), 200
     except mysql.connector.Error as e:
         return 'Database error', 500
+
+
+# CRAD opration for all users in admin
+# http://127.0.0.1:5000/usersadmin
+@app.route('/usersadmin', methods=['GET', 'POST', 'PUT', 'DELETE'])
+@login_required
+def usersadmin():
+    if current_user.is_admin():
+        # show all users
+        if request.method == 'GET':
+            try:
+                cr.execute('SELECT * FROM users')
+                data = cr.fetchall()
+                return jsonify(data), 200
+            except mysql.connector.errors as o:
+                return 'Database error', 500
+        # add new user
+        elif request.method == 'POST':
+            try:
+                registration()
+                return 'new user added'
+            except mysql.connector.errors as o:
+                return 'Database error', 500
+        # update user
+        elif request.method == 'PUT':
+            try:
+                userinfo()
+                return 'update this user'
+            except mysql.connector.errors as o:
+                return 'Database error', 500
+        # delete user
+        elif request.method == 'DELETE':
+            try:
+                delete_id = request.args.get('id')
+                cr.execute('DELETE FROM users WHERE id = %s', (delete_id,))
+                db.commit()
+                return 'user deleted'
+            except mysql.connector.errors as o:
+                return 'Database error', 500
 
 
 # Run server code (development mode)
