@@ -1,6 +1,6 @@
 from app import *
 from database import cr
-from models import user
+from models import user , product
 from flask import request, jsonify, Blueprint 
 
 
@@ -11,7 +11,7 @@ bp2 = Blueprint('main', __name__)
 def products():
     # filter with gender
     prod_gender = request.args.get('gender')
-    if prod_gender:
+    if prod_gender in ['male', 'female']:
         cr.execute(
             'SELECT * FROM `products` WHERE prod_gender = %s', (prod_gender,))
         gender = cr.fetchall()
@@ -28,8 +28,8 @@ def products():
 @bp2.route('/card')
 def card():
     name_prod = request.args.get('name')
-    cr.execute('SELECT * FROM `products` where name = %s', (name_prod))
-    card = cr.fetchone()
+    cr.execute('SELECT * FROM `products` WHERE name = %s', (name_prod,))
+    card = cr.fetchall()
     return jsonify(card)
 
 # Registration Page
@@ -42,7 +42,7 @@ def registration():
 # http://127.0.0.1:5000/
 @bp2.route('/')
 def index():
-    cr.execute('SELECT * FROM product LIMIT 10;')
+    cr.execute('SELECT * FROM `products` ORDER BY `products`.`sales` DESC')
     data = cr.fetchall()
     return jsonify(data)
 

@@ -30,7 +30,6 @@ class User(UserMixin):
 
 
     def show_all_users():
-        if request.method == 'GET':
             try:
                 cr.execute('SELECT * FROM users')
                 data = cr.fetchall()
@@ -41,7 +40,7 @@ class User(UserMixin):
     def delete_user():
         try:
             delete_id = request.args.get('id')
-            cr.execute('DELETE FROM users WHERE id = %s', (delete_id))
+            cr.execute('DELETE FROM `users` WHERE id = %s', (delete_id,))
             db.commit()
             return 'user deleted'
         except mysql.connector.errors as o:
@@ -79,41 +78,41 @@ class User(UserMixin):
                                (new_hached_pass))
 
                 if new_phone:
-                    cr.execute('UPDATE `users` SET "phone" = %s', (new_phone))
+                    cr.execute('UPDATE `users` SET "phone" = %s', (new_phone,))
 
                 if new_last_name:
                     cr.execute('UPDATE `users` SET "last_name" = %s',
-                               (new_last_name))
+                               (new_last_name,))
 
                 if new_adress_line1:
                     cr.execute(
-                        'UPDATE `users` SET "adress_line1" = %s', (new_adress_line1))
+                        'UPDATE `users` SET "adress_line1" = %s', (new_adress_line1,))
 
                 if new_adress_line2:
                     cr.execute(
-                        'UPDATE `users` SET "adress_line2" = %s', (new_adress_line2))
+                        'UPDATE `users` SET "adress_line2" = %s', (new_adress_line2,))
 
                 if new_city:
-                    cr.execute('UPDATE `users` SET "city" = %s', (new_city))
+                    cr.execute('UPDATE `users` SET "city" = %s', (new_city,))
 
                 if new_country:
                     cr.execute('UPDATE `users` SET "country" = %s',
-                               (new_country))
+                               (new_country,))
 
                 if new_date_birth:
                     cr.execute(
-                        'UPDATE `users` SET "date_birth" = %s', (new_date_birth))
+                        'UPDATE `users` SET "date_birth" = %s', (new_date_birth,))
 
                 if new_gender:
                     cr.execute(
-                        'UPDATE `users` SET "gender" = %s', (new_gender))
+                        'UPDATE `users` SET "gender" = %s', (new_gender,))
 
                 if new_first_name:
                     cr.execute(
-                        'UPDATE `users` SET "first_name" = %s', (new_first_name))
+                        'UPDATE `users` SET "first_name" = %s', (new_first_name,))
 
                 db.commit()
-                return f'user {new_first_name} updated', 201
+                return f'user {new_first_name,} updated', 201
 
             else:
                 return f'wrong password', 401

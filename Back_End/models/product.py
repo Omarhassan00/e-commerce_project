@@ -6,9 +6,8 @@ import mysql.connector
 class product():
 
     def show_all_product():
-        if request.method == 'GET':
             try:
-                cr.execute('SELECT * FROM product')
+                cr.execute('SELECT * FROM products')
                 data = cr.fetchall()
                 return jsonify(data), 200
             except mysql.connector.errors as o:
@@ -16,14 +15,14 @@ class product():
 
     def product_info(id):
 
-        cr.execute('SELECT * FROM `product` WHERE id = %s', (id,))
+        cr.execute('SELECT * FROM `products` WHERE id = %s', (id,))
         data = cr.fetchone()
         return jsonify(data)
 
     def delete_product():
         try:
             delete_id = request.args.get('id')
-            cr.execute('DELETE FROM product WHERE id = %s', (delete_id))
+            cr.execute('DELETE FROM products WHERE id = %s', (delete_id,))
             db.commit()
             return 'product deleted'
         except mysql.connector.errors as o:
@@ -31,7 +30,7 @@ class product():
 
     def update_product(id):
 
-        cr.execute('SELECT * FROM `product` WHERE id = %s', (id,))
+        cr.execute('SELECT * FROM `products` WHERE id = %s', (id,))
         data = cr.fetchone()
 
         try:
@@ -46,35 +45,35 @@ class product():
                 new_docs = request.args.get('discription')
 
                 if new_price:
-                    cr.execute('UPDATE `users` SET "price" = %s',
-                               (new_price))
+                    cr.execute('UPDATE `products` SET "price" = %s',
+                               (new_price,))
 
                 if new_name:
-                    cr.execute('UPDATE `users` SET "name" = %s', (new_name))
+                    cr.execute('UPDATE `products` SET "name" = %s', (new_name,))
 
                 if new_discount:
-                    cr.execute('UPDATE `users` SET "discount" = %s',
-                               (new_discount))
+                    cr.execute('UPDATE `products` SET "discount" = %s',
+                               (new_discount,))
 
                 if new_image:
                     cr.execute(
-                        'UPDATE `users` SET "image" = %s', (new_image))
+                        'UPDATE `products` SET "image" = %s', (new_image,))
 
                 if new_stock:
                     cr.execute(
-                        'UPDATE `users` SET "stock" = %s', (new_stock))
+                        'UPDATE `products` SET "stock" = %s', (new_stock,))
 
                 if new_offer:
                     cr.execute(
-                        'UPDATE `users` SET "offer_price" = %s', (new_offer))
+                        'UPDATE `products` SET "offer_price" = %s', (new_offer,))
 
                 if new_docs:
-                    cr.execute('UPDATE `users` SET "discription" = %s',
-                               (new_docs))
+                    cr.execute('UPDATE `products` SET "discription" = %s',
+                               (new_docs,))
 
                 if new_gender:
                     cr.execute(
-                        'UPDATE `users` SET "gender" = %s', (new_gender))
+                        'UPDATE `products` SET "gender" = %s', (new_gender,))
 
                 db.commit()
                 return f'product updated', 201
@@ -97,12 +96,12 @@ class product():
         if not all([price, name, discount, image, stock, gender, offer, docs]):
             return 'Invalid input', 400
         # try:
-        cr.execute('select * from `product` where name = %s', (name,))
+        cr.execute('select * from `products` where name = %s', (name,))
         data = cr.fetchone()
         if data:
             return f'sorry, {name} already exist\n', 400
         else:
-            cr.execute('INSERT INTO `product` (price,name,discount,image,stock,offer,discription,gender) VALUES ( %s, %s, %s, %s, %s, %s, %s, %s)',
+            cr.execute('INSERT INTO `products` (price,name,discount,image,stock,offer,discription,gender) VALUES ( %s, %s, %s, %s, %s, %s, %s, %s)',
                        (price, name, discount, image, stock, gender, offer, docs))
             db.commit()
             return f'product {name} added', 201
