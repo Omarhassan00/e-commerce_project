@@ -1,6 +1,6 @@
-from database import cr , db
+from database import cr, db
 from app import *
-from flask_login import UserMixin , login_user
+from flask_login import UserMixin, login_user
 from flask import request, jsonify
 import mysql.connector
 from flask import redirect
@@ -12,7 +12,6 @@ class User(UserMixin):
         self.email = email
         self.password = password
         self.role = role
-
 
     def is_admin(self):
         return self.role == 'admin'
@@ -26,16 +25,13 @@ class User(UserMixin):
     def __repr__(self):
         return f"User('{self.email}')"
 
-
-
-
     def show_all_users():
-            try:
-                cr.execute('SELECT * FROM users')
-                data = cr.fetchall()
-                return jsonify(data), 200
-            except mysql.connector.errors as o:
-                return 'Database error', 500
+        try:
+            cr.execute('SELECT * FROM users')
+            data = cr.fetchall()
+            return jsonify(data), 200
+        except mysql.connector.errors as o:
+            return 'Database error', 500
 
     def delete_user():
         try:
@@ -112,14 +108,14 @@ class User(UserMixin):
                         'UPDATE `users` SET "first_name" = %s', (new_first_name,))
 
                 db.commit()
-                return f'user {new_first_name,} updated', 201
+                return f'user {new_first_name, } updated', 201
 
             else:
                 return f'wrong password', 401
         except mysql.connector.Error as e:
             return 'Database error', 500
 
-    def user_login(email,password):
+    def user_login(email, password):
 
         try:
             cr.execute('select * from `users` where email = %s', (email,))
@@ -174,3 +170,24 @@ class User(UserMixin):
             db.commit()
             return f'user {first_name} added', 201
     # except mysql.connector.Error as e:
+
+    def show_membership():
+        cr.execute(
+            'SELECT  id ,First_name ,Last_name ,email ,membership FROM users')
+        data = cr.fetchall()
+        return jsonify(data)
+
+    def update_membership():
+        id = request.args.get('id')
+        password = request.args.get('password')
+        membership = request.args.get('membership')
+        if not [id, password, membership]:
+            if user.check_password(password):
+                try:
+                    cr.execute(
+                        'UPDATE users SET membership = %s WHERE id = %s', (membership, id,))
+                    db.commit()
+                    return f'User {id} updated', 200
+                except mysql.connector.Error as e:
+                    return 'Database error', 500
+        return 'invalid input'
