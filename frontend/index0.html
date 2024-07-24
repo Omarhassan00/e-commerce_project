@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="./css/style1.css">
+</head>
+<body>
+    
+    <div class="container">
+        <header id="nav-header">
+            <div class="navbar">
+                <div class="logo"><a href="#">Web Dev Creative</a></div>
+                <ul class="links">
+                    <li><a href="./index2.html">Home</a></li>
+                    <li><a href="about">About</a></li>
+                    <li><a href="/index1.html">Product</a></li>
+                    <li><a href="contact">Contact</a></li>
+                </ul>
+                <a href="./index.html" class="action_btn">Get Started</a>
+                <div class="toggle_btn">
+                    <i class="fa-solid fa-bars"></i>
+                </div>
+            </div>
+            <div class="dropdown_menu">
+                <li><a href="hero">Home</a></li>
+                <li><a href="about">About</a></li>
+                <li><a href="services">Services</a></li>
+                <li><a href="contact">Contact</a></li>
+                <li><a href="" class="action_btn">Get Started</a></li>
+            </div>
+            <div class="icon-cart">
+                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 4h1.5L9 16m0 0h8m-8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm-8.5-3h9.25L19 7H7.312"/>
+                  </svg>                  
+                <span>0</span>
+            </div>
+        </header>
+        <div id="contentTab">
+            content in template file
+        </div>
+    </div>
+    <div class="cartTab">
+        <h1>Shopping cart</h1>
+        <div class="listCart">
+            Show item here
+        </div>
+        <div class="btn">
+            <button class="close">Close</button>
+            <button class="CheckOut">
+                Check Out
+            </button>
+        </div>
+    </div>
+
+
+
+    <!-- <script src="./js/cart.js"></script> -->
+    <script>
+        const toggleBtn = document.querySelector('.toggle_btn')
+        const toggleBtnIcon = document.querySelector('.toggle_btn i')
+        const dropDownMenu = document.querySelector('.dropdown_menu')
+
+        toggleBtn.onclick = function () {
+            dropDownMenu.classList.toggle('open');
+            const isOpen = dropDownMenu.classList.contains('open')
+
+            toggleBtnIcon.classList = isOpen
+                ? 'fa-solid fa-xmark'
+                : 'fa-solid fa-bars'
+        }
+    </script>
+     <script src="./js/cart.js"></script>
+</body>
+
+</html>
