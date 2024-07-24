@@ -1,0 +1,106 @@
+body {
+	font-family: Arial;
+	 background: linear-gradient(rgba(2, 2, 1, 0.171), rgba(0, 0, 0, 0.288)), url(https://thumbs.dreamstime.com/b/black-friday-scene-crowded-malls-long-queues-online-shopping-deals-wooden-background-black-friday-scene-crowded-318363939.jpg) fixed center center;
+    background-image: linear-gradient(rgba(2, 2, 1, 0.24), rgba(0, 0, 0, 0.158)), url(https://thumbs.dreamstime.com/b/black-friday-scene-crowded-malls-long-queues-online-shopping-deals-wooden-background-black-friday-scene-crowded-318363939.jpg);
+	background-size: cover;
+	background-position: center;
+	background-repeat: no-repeat;
+	background-attachment: fixed;
+}
+
+.container {
+	width: 950px;
+    margin: 80px auto;
+    color: #ffffff;
+	line-height: 1.5;
+}
+
+.text-center {
+    text-align: center;
+    color: #ffffff;
+}
+.fa-solid, .fas {
+    font-weight: 900;
+    width: 4%;
+    color: #b059eb;
+    height: 4%;
+    font-size: x-large;
+    position: absolute;
+    left: 270px;
+}
+.content {
+	display: flex;
+	margin-top: 40px;
+}
+
+.contact-info {
+	display: inline-block;
+	padding: 4px 20px 0px 20px;
+}
+
+.address-line {
+	margin-top: 40px;
+}
+
+.col-1 {
+	width: 530px;
+}
+
+.col-2 {
+	flex: 1 1 auto;
+	background-color: white;
+}
+
+.form-container {
+	color: #7e6196;
+	padding: 30px;
+}
+
+.contact-info-title {
+	color: #b499cb;
+}
+
+.form-row {
+	padding-bottom: 30px;
+}
+
+.form-field {
+	width: 100%;
+	border: none;
+	border-bottom: 1px solid #000;
+}
+
+.send-btn {
+	border: 0px;
+	padding: 12px 26px;
+	background-color: #2a085bc7;
+	color: white;
+}
+
+@media all and (max-width: 1024px) {
+	.container {
+		width: auto;
+		padding: 30px;
+	}
+	 .col-1 {
+		width: 360px;
+	} 
+}
+
+@media all and (max-width: 700px) {
+	.content {
+		display: block;
+	}
+	.col-2 {
+		margin-top: 40px;
+	} 
+	.col-1{
+	width:100%;
+	}
+}
+
+@media all and (max-width: 500px) {
+	.container {
+		padding: 10px;
+	}
+}
