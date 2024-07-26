@@ -4,11 +4,15 @@ from models import user , product
 from flask import request, jsonify, Blueprint 
 
 
+# def blueprint
 bp2 = Blueprint('main', __name__)
+
+
 # pruduct page
 # http://127.0.0.1:5000/products?gender=male
 @bp2.route('/products')
 def products():
+
     # filter with gender
     prod_gender = request.args.get('gender')
     if prod_gender in ['male', 'female']:
@@ -16,7 +20,8 @@ def products():
             'SELECT * FROM `products` WHERE prod_gender = %s', (prod_gender,))
         gender = cr.fetchall()
         return jsonify(gender)
-
+    
+    # show all product
     else:
         cr.execute('SELECT * FROM `products`')
         prod = cr.fetchall()
@@ -32,11 +37,13 @@ def card():
     card = cr.fetchall()
     return jsonify(card)
 
+
 # Registration Page
 # http://127.0.0.1:5000/registration?password=123&email=omarhassan&first_name=oar&last_name=hassan&country=egypt&city=suez&adress_1=sgdf&adress_2=sgdffdd&gender=male&date_birth=1997-05-18&phone=01090220650
 @bp2.route('/registration')
 def registration():
     return user.User.user_registration()
+
 
 # Home Page
 # http://127.0.0.1:5000/

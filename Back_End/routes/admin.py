@@ -10,7 +10,7 @@ from flask_login import current_user, login_required
 bp = Blueprint('admin', __name__)
 
 
-# Admin Page
+# Main Admin Page
 # http://127.0.0.1:5000/admin
 @bp.route('/admin')
 @login_required
@@ -64,21 +64,29 @@ def usersadmin():
 @login_required
 def product_admin():
     if current_user.is_admin():
+
+        # show all product
         if request.method == 'GET':
             return product.product.show_all_product()
 
+
+        # add new product
         elif request.method == 'POST':
             try:
                 return product.product.new_product()
             except mysql.connector.errors as o:
                 return 'Database error', 500
 
+
+        # update product info
         elif request.method == 'PUT':
             try:
                 return product.product.update_product()
             except mysql.connector.errors as o:
                 return 'Database error', 500
 
+
+        # delete any product
         elif request.method == 'DELETE':
             return product.product.delete_product()
     else:
@@ -95,6 +103,8 @@ def inventory_admin():
             cr.execute('SELECT id , name, stock FROM products')
             data = cr.fetchall()
             return jsonify(data)
+        
+
         # update stock
         elif request.method == 'PUT':
             try:
@@ -107,6 +117,7 @@ def inventory_admin():
                 return 'Database error', 500
     else:
         return redirect('/')
+
 
 # show salse
 # http://127.0.0.1:5000/admin/sales
@@ -129,6 +140,8 @@ def membership_admin():
     if current_user.is_admin():
         if request.method == 'GET':
             return user.User.show_membership()
+        
+        
         # update membership role
         elif request.method == 'PUT':
             return user.User.update_membership()

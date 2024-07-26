@@ -16,7 +16,7 @@ bp = Blueprint('auth', __name__)
 @bp.route('/logout')
 @login_required
 def logout():
-    logout_user()
+    logout_user()   # forgit from session
     return redirect('/')
 
 
@@ -39,6 +39,7 @@ def userinfo():
 @login_required
 def history():
     try:
+        # show all hestory submit order
         cr.execute(
             'SELECT * from orders INNER JOIN products ON products.id = orders.product_id WHERE user_id = %s', (current_user.id,))
         data = cr.fetchall()
@@ -75,6 +76,7 @@ def cart():
 @bp.route('/submit', methods=['GET'])
 @login_required
 def submit():
+    
     # get data from request
     product_id = request.args.get('product_id')
     quantity = request.args.get('quantity')

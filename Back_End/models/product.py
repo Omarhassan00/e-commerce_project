@@ -96,14 +96,15 @@ class product():
 
         if not all([price, name, discount, image, stock, gender, offer, docs]):
             return 'Invalid input', 400
-        # try:
-        cr.execute('select * from `products` where name = %s', (name,))
-        data = cr.fetchone()
-        if data:
-            return f'sorry, {name} already exist\n', 400
-        else:
-            cr.execute('INSERT INTO `products` (price,name,discount,image,stock,offer,discription,gender) VALUES ( %s, %s, %s, %s, %s, %s, %s, %s)',
+        try:
+            cr.execute('select * from `products` where name = %s', (name,))
+            data = cr.fetchone()
+            if data:
+                return f'sorry, {name} already exist\n', 400
+            else:
+                cr.execute('INSERT INTO `products` (price,name,discount,image,stock,offer,discription,gender) VALUES ( %s, %s, %s, %s, %s, %s, %s, %s)',
                        (price, name, discount, image, stock, gender, offer, docs))
-            db.commit()
-            return f'product {name} added', 201
-    # except mysql.connector.Error as e:
+                db.commit()
+                return f'product {name} added', 201
+        except mysql.connector.Error as e:
+            return 'Database error', 500
