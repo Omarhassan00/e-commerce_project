@@ -51,7 +51,7 @@ def index():
 # http://127.0.0.1:5000/login?email=omar@gmail.com&password=123
 @bp2.route('/login')
 def login():
-    email = request.args.get('username')
+    email = request.args.get('email')
     password = request.args.get('password')
     if not email or not password:
         return 'you must login', 400

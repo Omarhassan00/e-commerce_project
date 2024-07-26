@@ -1,9 +1,10 @@
 from app import *
-from database import cr , db
-from models import user, product
+from database import cr, db
+from models import user
 from flask import request, redirect, jsonify, Blueprint
 import mysql.connector
 from flask_login import current_user, login_required, logout_user
+import models.cart
 
 
 # def blueprint
@@ -39,139 +40,54 @@ def userinfo():
 def history():
     try:
         cr.execute(
-            'SELECT* from orders INNER JOIN products ON products.id = orders.product_id WHERE user_id = %s', (current_user.id,))
+            'SELECT * from orders INNER JOIN products ON products.id = orders.product_id WHERE user_id = %s', (current_user.id,))
         data = cr.fetchall()
         return jsonify(data), 200
     except mysql.connector.Error as e:
         return 'Database error', 500
 
-####################################################################################################
 
-# Admin Page
-# http://127.0.0.1:5000/admin
-@bp.route('/admin')
+# catr CRAD opration
+# http://127.0.0.1:5000/cart
+@bp.route('/cart', methods=['GET', 'POST', 'DELETE'])
 @login_required
-def admin():
-    if current_user.is_admin():  # Check if the user is an admin
-        cr.execute('SELECT First_name FROM users WHERE id = %s',(current_user.id,))
-        data = cr.fetchall()
-        return jsonify(data)
-    else:
-        return redirect('/')
+def cart():
+    # show cart
+    if request.method == 'GET':
+        return models.cart.show_cart(current_user.id,)
 
+    # add to cart
+    elif request.method == 'POST':
+        product_id = request.args.get('product_id')
+        quantity = request.args.get('amount_product')
+        return models.cart.add_product(product_id, current_user.id, quantity,)
 
-# CRAD opration for users in admin
-# http://127.0.0.1:5000/admin/user
-@bp.route('/admin/user', methods=['GET', 'POST', 'PUT', 'DELETE'])
-@login_required
-def usersadmin():
-    if current_user.is_admin():
-
-        # show all users
-        if request.method == 'GET':
-            return user.User.show_all_users()
-
-        # add new user
-        elif request.method == 'POST':
-            try:
-                return user.User.user_registration()
-                
-            except mysql.connector.errors as o:
-                return 'Database error', 500
-
-        # update user
-        elif request.method == 'PUT':
-            try:
-                return user.User.user_info()
-            except mysql.connector.errors as o:
-                return 'Database error', 500
-
-        # delete user
-        elif request.method == 'DELETE':
-            return user.User.delete_user()
+    # delete from cart
+    elif request.method == 'DELETE':
+        return models.cart.delete_oneproduct(current_user.id,)
 
     else:
-        return redirect('/')
+        return 'error input', 500
 
 
-
-# CRAD opration for product in admin
-# http://127.0.0.1:5000/admin/product
-@bp.route('/admin/product', methods=['GET', 'POST', 'PUT', 'DELETE'])
+# order submit
+# http://127.0.0.1:5000/submit
+@bp.route('/submit', methods=['GET'])
 @login_required
-def product_admin():
-    if current_user.is_admin():
-        if request.method == 'GET':
-            return product.product.show_all_product()
-
-        elif request.method == 'POST':
-            try:
-                return product.product.new_product()
-            except mysql.connector.errors as o:
-                return 'Database error', 500
-
-        elif request.method == 'PUT':
-            try:
-                return product.product.update_product()
-            except mysql.connector.errors as o:
-                return 'Database error', 500
-
-        elif request.method == 'DELETE':
-            return product.product.delete_product()
-    else:
-        return redirect('/')
+def submit():
+    # get data from request
+    product_id = request.args.get('product_id')
+    quantity = request.args.get('quantity')
+    address = request.args.get('address')
+    price = request.args.get('price')
+    total = request.args.get('total')
 
 
-# show all inventory
-# http://127.0.0.1:5000/admin/inventory
-@bp.route('/admin/inventory',methods=['GET', 'PUT'])
-@login_required
-def inventory_admin():
-    if current_user.is_admin():
-        if request.method == 'GET':
-            cr.execute('SELECT id , name, stock FROM products')
-            data = cr.fetchall()
-            return jsonify(data)
-        # update stock
-        elif request.method == 'PUT':
-            try:
-                new_stock = request.args.get('stock')
-                product_id = request.args.get('id')
-                cr.execute('UPDATE products SET stock = %s WHERE id = %s', (new_stock , product_id ,))
-                db.commit()
-                return 'Updated', 200
-            except mysql.connector.errors as o:
-                return 'Database error', 500
-    else:
-        return redirect('/')
+    # add data to database
+    cr.execute('INSERT INTO orders (user_id	,product_id	,quantity ,total_amount ,address ,price) VALUES (%s , %s , %s, %s , %s , %s)',
+            (current_user.id, product_id, quantity, total, address, price))
+    db.commit()
 
-# show salse
-# http://127.0.0.1:5000/admin/sales
-@bp.route('/admin/sales')
-@login_required
-def sales_admin():
-    if current_user.is_admin():
-        cr.execute('SELECT name, sales FROM products')
-        data = cr.fetchall()
-        return jsonify(data)
-    else:
-        return redirect('/')
-
-
-# show membership opration
-# http://127.0.0.1:5000/admin/membership
-@bp.route('/admin/membership',methods=['GET', 'PUT'])
-@login_required
-def membership_admin():
-    if current_user.is_admin():
-        if request.method == 'GET':
-            return user.User.show_membership()
-        # update membership role
-        elif request.method == 'PUT':
-            return user.User.update_membership()
-        
-        else:
-            return 'wrong request'
-
-    else:
-        return redirect('/')
+    # delete old cart from all product
+    models.cart.delete_cart(current_user.id,)
+    return 'order saved'

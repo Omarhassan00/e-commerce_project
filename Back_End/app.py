@@ -6,11 +6,11 @@ from flask import Flask
 from flask_bcrypt import Bcrypt
 import os
 from flask_login import  LoginManager
-
 import routes.auth
 import routes.main
+import routes.admin
 
-# Flask Start
+
 app = Flask(__name__)
 
 app.config['SECRET_KEY'] = os.environ.get(
@@ -25,6 +25,8 @@ login_manager.login_view = '/login'
 # app.register_blueprint()
 app.register_blueprint(routes.main.bp2)
 app.register_blueprint(routes.auth.bp)
+app.register_blueprint(routes.admin.bp)
+
 
 @login_manager.user_loader
 def load_user(user_id):

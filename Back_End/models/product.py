@@ -6,12 +6,12 @@ import mysql.connector
 class product():
 
     def show_all_product():
-            try:
-                cr.execute('SELECT * FROM products')
-                data = cr.fetchall()
-                return jsonify(data), 200
-            except mysql.connector.errors as o:
-                return 'Database error', 500
+        try:
+            cr.execute('SELECT * FROM products')
+            data = cr.fetchall()
+            return jsonify(data), 200
+        except mysql.connector.errors as o:
+            return 'Database error', 500
 
     def product_info(id):
 
@@ -45,35 +45,36 @@ class product():
                 new_docs = request.args.get('discription')
 
                 if new_price:
-                    cr.execute('UPDATE `products` SET "price" = %s',
-                               (new_price,))
+                    cr.execute('UPDATE `products` SET "price" = %s WHERE id = %s',
+                               (new_price, id,))
 
                 if new_name:
-                    cr.execute('UPDATE `products` SET "name" = %s', (new_name,))
+                    cr.execute(
+                        'UPDATE `products` SET "name" = %s WHERE id = %s', (new_name, id,))
 
                 if new_discount:
-                    cr.execute('UPDATE `products` SET "discount" = %s',
-                               (new_discount,))
+                    cr.execute('UPDATE `products` SET "discount" = %s WHERE id = %s',
+                               (new_discount, id,))
 
                 if new_image:
                     cr.execute(
-                        'UPDATE `products` SET "image" = %s', (new_image,))
+                        'UPDATE `products` SET "image" = %s WHERE id = %s', (new_image, id,))
 
                 if new_stock:
                     cr.execute(
-                        'UPDATE `products` SET "stock" = %s', (new_stock,))
+                        'UPDATE `products` SET "stock" = %s WHERE id = %s', (new_stock, id,))
 
                 if new_offer:
                     cr.execute(
-                        'UPDATE `products` SET "offer_price" = %s', (new_offer,))
+                        'UPDATE `products` SET "offer_price" = %s WHERE id = %s', (new_offer, id,))
 
                 if new_docs:
-                    cr.execute('UPDATE `products` SET "discription" = %s',
-                               (new_docs,))
+                    cr.execute('UPDATE `products` SET "discription" = %s WHERE id = %s',
+                               (new_docs, id,))
 
                 if new_gender:
                     cr.execute(
-                        'UPDATE `products` SET "gender" = %s', (new_gender,))
+                        'UPDATE `products` SET "gender" = %s WHERE id = %s', (new_gender, id,))
 
                 db.commit()
                 return f'product updated', 201
