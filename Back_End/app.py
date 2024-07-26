@@ -38,6 +38,6 @@ def load_user(user_id):
         return user.User(data[0], data[4], data[1], data[11])
     return None
 
-# Run server code (development mode)
+# Run server code
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    app.run(debug=False, port=5000)
