@@ -17,18 +17,18 @@ class User(UserMixin):
         self.role = role
 
     # check if user is admin
+    '''Checks if the user has an 'admin' role. '''
     def is_admin(self):
         return self.role == 'admin'
-
+    '''Checks if the user has a 'user' role.'''
     def is_user(self):
         return self.role == 'user'
 
     # check password if correct
-    '''useing bcrypt method to check password correction'''
-
+    '''Verifies if the provided password matches the stored hashed password using bcrypt.'''
     def check_password(self, password):
         return bcrypt.check_password_hash(self.password, password)
-
+    ''' sending report user '''
     def __repr__(self):
         return f"User('{self.email}')"
 
@@ -52,12 +52,16 @@ class User(UserMixin):
             return 'user deleted'
         except mysql.connector.errors as o:
             return 'Database error', 500
-
+        
+    # fetches the information of user
+    '''Fetches and returns the information of a user with the specified id'''
     def user_info(id):
         cr.execute('SELECT * FROM `users` WHERE id = %s', (id,))
         data = cr.fetchone()
         return jsonify(data[2:])
-
+    
+    # update password
+    '''Updates the password of a user with the specified id.'''
     def update_info(id):
         password = request.args.get('password')
         user = User(data[0], data[4], data[1], data[11])
@@ -126,7 +130,9 @@ class User(UserMixin):
                 return f'wrong password', 401
         except mysql.connector.Error as e:
             return 'Database error', 500
-
+        
+    #check user 
+    ''' check if user is user or admine and if user redirect is home'''
     def user_login(email, password):
 
         try:
@@ -152,7 +158,9 @@ class User(UserMixin):
                 return 'Wrong Email', 401
         except mysql.connector.Error as e:
             return 'Database error', 500
-
+        
+    # creat new user 
+    ''' creat new user'''
     def user_registration():
         password = request.args.get('password')
         email = request.args.get('email')
@@ -183,12 +191,16 @@ class User(UserMixin):
             return f'user {first_name} added', 201
     # except mysql.connector.Error as e:
 
+    #show membership
+    '''for admine to show all user membership '''
     def show_membership():
         cr.execute(
             'SELECT  id ,First_name ,Last_name ,email ,membership FROM users')
         data = cr.fetchall()
         return jsonify(data)
 
+    # update any user
+    '''for admine update any user '''
     def update_membership():
         id = request.args.get('id')
         password = request.args.get('password')

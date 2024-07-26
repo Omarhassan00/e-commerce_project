@@ -5,6 +5,8 @@ import mysql.connector
 
 class product():
 
+     # show product
+    '''show all product '''
     def show_all_product():
         try:
             cr.execute('SELECT * FROM products')
@@ -13,12 +15,16 @@ class product():
         except mysql.connector.errors as o:
             return 'Database error', 500
 
+     # show information product
+    '''show information product '''
     def product_info(id):
 
         cr.execute('SELECT * FROM `products` WHERE id = %s', (id,))
         data = cr.fetchone()
         return jsonify(data)
 
+      # delete product
+    '''deleted product '''
     def delete_product():
         try:
             delete_id = request.args.get('id')
@@ -28,6 +34,8 @@ class product():
         except mysql.connector.errors as o:
             return 'Database error', 500
 
+    # update product
+    '''update product '''
     def update_product(id):
 
         cr.execute('SELECT * FROM `products` WHERE id = %s', (id,))
@@ -83,7 +91,10 @@ class product():
                 return f'wrong product id', 401
         except mysql.connector.Error as e:
             return 'Database error', 500
-
+        
+        
+    # create new product
+    '''create new product'''
     def new_product():
         price = request.args.get('price')
         name = request.args.get('name')
